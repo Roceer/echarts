@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>你个二百五</title>
+    <script src="echarts.js"></script>
+    <script src="data.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        .container{
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container"></div>
+<script>
+    let main = document.querySelectorAll(".container");
+    let pie = echarts.init(main[0]);
+    let pieOption = {
+        series: [
+            {
+                name:'访问来源',
+                type:'pie',
+                avoidLabelOverlap: false,
+                label: {
+                    normal: {
+                        show: false,
+                    },
+                    emphasis: {
+                        show: true,
+                        textStyle: {
+                            fontSize: '20',
+                        }
+                    }
+                },
+                labelLine: {
+                    normal: {
+                        show: false
+                    }
+                },
+                data:[]
+            }
+        ]
+    };
+
+    let arr = [];
+    for (let i = 0; i < categories.length; i++) {
+        if (i == 0) {continue};
+        let name = categories[i];
+        let value = data.filter(ele=>ele[4].includes(name)).length;
+        arr.push({name,value});
+    }
+    pieOption.series[0].data = arr;
+
+    pie.setOption(pieOption);
+</script>
+</body>
+</html>

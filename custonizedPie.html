@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>散点图</title>
+    <script src="echarts.js"></script>
+    <script src="data.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .container{
+            width: 1000px;
+            height: 700px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container"></div>
+<script>
+    let main = document.querySelectorAll(".container");
+    let mycharts = echarts.init(main[0]);
+
+    let selected = {};
+    let series = [];
+
+    categories.forEach(category => {
+        let movies = data.filter(ele => ele[4].includes(category));
+
+        if (category == '全部') {
+            selected[category] = true;
+        }else{
+            selected[category] = false;
+        }
+
+        let obj = {
+            name: category,
+            data: category == '全部' ? data : movies,
+            type: 'scatter',
+            symbolSize: function (data) {
+                return Math.ceil(data[2] / 10);
+            },
+            label: {
+                emphasis: {
+                    show: true,
+                    formatter: function (param) {
+                        return param.data[3];
+                    },
+                    position: 'top'
+                }
+            },
+            itemStyle: {
+                normal: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(120, 36, 50, 0.5)',
+                    shadowOffsetY: 5,
+                    color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
+                        offset: 0,
+                        color: ``
+                    }, {
+                        offset: 1,
+                        color: ``
+                    }])
+                }
+            }
+        };
+
+        series.push(obj);
+
+    })
+
+    let Option = {
+        backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#aaa'
+        }]),
+        title: {
+            text: 'top250',
+            left:'center',
+            bottom:0
+        },
+        xAxis: {
+            name:'观影人数',
+            splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+            }
+        },
+        yAxis: {
+            name:'豆瓣评分',
+            splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+            },
+            scale: true
+        },
+        legend:{
+            type: 'scroll',
+            orient: 'vertical',
+            right: 10,
+            top: 20,
+            bottom: 20,
+            data:categories,
+            selected,
+            selectedMode:'single',
+        },
+        series,
+        tooltip: {
+            trigger: 'item',
+                formatter: function (params) {
+                let data = params.data;
+                return `影片：${data[3]}<br>
+                            评分：${data[1]}<br>
+                            类型：${data[4]}
+                    `
+        }
+    },
+    };
+
+    mycharts.setOption(Option);
+</script>
+</body>
+</html>
